@@ -1,42 +1,14 @@
+import { beginnerLessons, twistyPlayerDefaults } from './cube.js';
+
 const STORAGE_KEY = 'cube-note-content-v1';
 const PROGRESS_KEY = 'cube-note-progress-v1';
-
-const initialLessons = [
-  ['1층 십자가 맞추기', '1층 십자가를 맞추는 단계', 'https://cubelearning.tistory.com/2'],
-  ['1층 코너 맞추기', '1층 코너를 맞추는 단계', 'https://cubelearning.tistory.com/3'],
-  ['2층 엣지 맞추기', '2층 엣지를 맞추는 단계', 'https://cubelearning.tistory.com/4'],
-  ['3층 십자가 맞추기', '3층 십자가를 맞추는 단계', 'https://cubelearning.tistory.com/5'],
-  ['3층 윗면 맞추기', '3층 윗면을 맞추는 단계', 'https://cubelearning.tistory.com/6'],
-  ['3층 코너 맞추기', '3층 코너를 맞추는 단계', 'https://cubelearning.tistory.com/7'],
-  ['3층 엣지 맞추기', '3층 엣지를 맞추는 단계', 'https://cubelearning.tistory.com/8']
-].map(([title, summary, source], index) => ({
-  id: index + 1, title, summary, source, body: '', algorithm: '', image: '', tips: '', practice: '', cases: []
-}));
-
-initialLessons[6].body = '큐브가 전부 완성된 경우를 제외하면 총 4가지 케이스가 있습니다.';
-initialLessons[6].algorithm = "R U R' U' L' U' L U U R U' R' U' L' U L";
-initialLessons[6].cases = [
-  { title: 'Case 1', description: '엣지 조각이 상하좌우로 서로 바뀌어야 하는 경우', setup: 'M2 U M2 U2 M2 U M2' },
-  { title: 'Case 2', description: '엣지 조각이 대각선으로 서로 바뀌어야 하는 경우', setup: "U M2 U M' U2 M2 U2 M' U' M2 U'" },
-  { title: 'Case 3', description: '엣지 조각이 시계 방향으로 바뀌어야 하는 경우', setup: "R2 U' R' U' R U R U R U' R" },
-  { title: 'Case 4', description: '엣지 조각이 반시계 방향으로 바뀌어야 하는 경우', setup: "R' U R' U' R' U' R' U R U R2" }
-];
 
 const state = {
   view: 'learn',
   selectedLesson: 1,
-  lessons: load(STORAGE_KEY, initialLessons).map((lesson, index) => ({ ...initialLessons[index], ...lesson, cases: lesson.cases ?? initialLessons[index].cases })),
+  lessons: load(STORAGE_KEY, beginnerLessons).map((lesson, index) => ({ ...beginnerLessons[index], ...lesson, cases: lesson.cases ?? beginnerLessons[index].cases })),
   completed: load(PROGRESS_KEY, [])
 };
-
-function navigate(view, lessonId = state.selectedLesson, replace = false) {
-  state.view = view;
-  state.selectedLesson = lessonId;
-  const historyState = { view, lesson: lessonId };
-  if (replace) history.replaceState(historyState, '', window.location.pathname);
-  else history.pushState(historyState, '', window.location.pathname);
-  render();
-}
 
 function load(key, fallback) {
   try {
@@ -152,11 +124,11 @@ function renderLessonView(lesson) {
   const isComplete = state.completed.includes(lesson.id);
   const previous = state.lessons.find((item) => item.id === lesson.id - 1);
   const next = state.lessons.find((item) => item.id === lesson.id + 1);
+  const playerStyle = `width:${twistyPlayerDefaults.width};height:${twistyPlayerDefaults.height};`;
   const blocks = [
-    lesson.source ? `<p class="source-link"><a href="${escapeHtml(lesson.source)}" target="_blank" rel="noreferrer">원문 보기 ↗</a></p>` : '',
     lesson.body ? `<section class="lesson-content-block"><span class="eyebrow">LESSON NOTE</span><h2>학습 내용</h2><p class="long-copy">${escapeHtml(lesson.body)}</p></section>` : '',
     lesson.algorithm ? `<section class="lesson-content-block algorithm-section"><span class="eyebrow">MOVE / FORMULA</span><h2>공식 / 기호</h2><div class="large-algorithm"><code>${escapeHtml(lesson.algorithm)}</code><button class="copy-button" data-action="copy" data-copy="${escapeHtml(lesson.algorithm)}">복사</button></div></section>` : '',
-    lesson.cases?.length ? `<section class="lesson-content-block cases-section"><span class="eyebrow">CASES</span><h2>케이스별 움직임</h2>${lesson.cases.map((item) => `<div class="case-block"><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.description)}</p><twisty-player experimental-setup-alg="${escapeHtml(item.setup)}" alg="${escapeHtml(lesson.algorithm)}" tempo-scale="0.7" experimental-stickering="PLL" background="none" style="width:100%;height:300px;"></twisty-player></div>`).join('')}</section>` : '',
+    lesson.cases?.length ? `<section class="lesson-content-block cases-section"><span class="eyebrow">CASES</span><h2>케이스별 움직임</h2>${lesson.cases.map((item) => `<div class="case-block"><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.description)}</p><twisty-player experimental-setup-alg="${escapeHtml(item.setup)}" alg="${escapeHtml(lesson.algorithm)}" tempo-scale="${escapeHtml(twistyPlayerDefaults.tempoScale)}" experimental-stickering="${escapeHtml(twistyPlayerDefaults.stickering)}" background="${escapeHtml(twistyPlayerDefaults.background)}" style="${playerStyle}"></twisty-player></div>`).join('')}</section>` : '',
     lesson.tips ? `<section class="lesson-content-block"><span class="eyebrow">REMEMBER</span><h2>주의할 점</h2><p class="long-copy">${escapeHtml(lesson.tips)}</p></section>` : '',
     lesson.practice ? `<section class="lesson-content-block practice-section"><span class="eyebrow">PRACTICE</span><h2>연습 체크</h2><p class="long-copy">${escapeHtml(lesson.practice)}</p></section>` : ''
   ].filter(Boolean).join('');
@@ -203,7 +175,7 @@ function renderEditor(lesson) {
           <div class="form-row"><div>${field('algorithm', '공식 / 기호', lesson.algorithm, '공식이나 기호를 적어주세요')}</div><div>${field('image', '이미지 주소', lesson.image, '이미지 URL을 붙여넣으세요')}</div></div>
           <div class="form-row"><div>${field('tips', '주의할 점', lesson.tips, '실수하기 쉬운 점이나 기억할 내용을 적어주세요.', true)}</div><div>${field('practice', '연습 체크', lesson.practice, '연습 목표나 체크 항목을 적어주세요.', true)}</div></div>
         </form>
-        <div class="editor-actions"><button class="ghost-button" data-action="clear-lesson">이 단계 비우기</button><div class="file-actions"><button class="file-button" data-action="export">파일로 저장</button><button class="file-button" data-action="import">파일 불러오기</button><input id="import-file" type="file" accept="application/json" hidden /><button class="solid-button" data-action="save">변경사항 저장 <span>✓</span></button></div></div>
+        <div class="editor-actions"><button class="ghost-button" data-action="clear-lesson">이 단계 비우기</button><button class="solid-button" data-action="save">변경사항 저장 <span>✓</span></button></div>
       </section>
       <aside class="preview-panel"><div class="preview-label"><span>LIVE PREVIEW</span><span class="live-dot">● LIVE</span></div><div class="preview-card"><span class="step-number">0${lesson.id}</span><h2>${escapeHtml(lesson.title || '단계 제목')}</h2><p class="preview-summary">${escapeHtml(lesson.summary || '짧은 설명이 여기에 표시됩니다.')}</p>${lesson.image ? `<img class="preview-image" src="${escapeHtml(lesson.image)}" alt="단계 이미지 미리보기" />` : '<div class="image-placeholder"><span>＋</span><p>이미지를 추가하면<br />여기에 표시됩니다.</p></div>'}<div class="preview-block"><span>학습 내용</span><p>${escapeHtml(lesson.body || '작성한 학습 내용이 표시됩니다.')}</p></div>${lesson.algorithm ? `<div class="algorithm-box"><span>공식 / 기호</span><code>${escapeHtml(lesson.algorithm)}</code></div>` : ''}</div></aside>
     </div>
@@ -229,35 +201,6 @@ function showToast(message) {
   setTimeout(() => toast.classList.remove('show'), 2200);
 }
 
-function exportContent() {
-  updateLessonFromForm();
-  save();
-  const file = new Blob([JSON.stringify({ version: 1, lessons: state.lessons }, null, 2)], { type: 'application/json' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(file);
-  link.download = 'cube-note-content.json';
-  link.click();
-  URL.revokeObjectURL(link.href);
-  showToast('콘텐츠 파일을 저장했습니다.');
-}
-
-function importContent(file) {
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const imported = JSON.parse(reader.result);
-      if (!Array.isArray(imported.lessons) || imported.lessons.length !== 7) throw new Error('invalid content');
-      state.lessons = imported.lessons.map((lesson, index) => ({ ...initialLessons[index], ...lesson, id: index + 1 }));
-      save();
-      render();
-      showToast('콘텐츠 파일을 불러왔습니다.');
-    } catch {
-      showToast('올바른 큐브노트 파일이 아닙니다.');
-    }
-  };
-  reader.readAsText(file);
-}
-
 function updateLessonFromForm() {
   const form = document.querySelector('#lesson-form');
   if (!form) return;
@@ -270,13 +213,11 @@ function bindEvents() {
   document.querySelectorAll('[data-action]').forEach((element) => {
     element.addEventListener('click', () => {
       const action = element.dataset.action;
-      if (action === 'home' || action === 'learn') { updateLessonFromForm(); navigate('learn'); }
-      if (action === 'edit') { updateLessonFromForm(); navigate('edit'); }
-      if (action === 'open-lesson') { updateLessonFromForm(); navigate('lesson', Number(element.dataset.id)); }
-      if (action === 'edit-lesson' || action === 'select-lesson') { updateLessonFromForm(); navigate('edit', Number(element.dataset.id)); }
+      if (action === 'home' || action === 'learn') { updateLessonFromForm(); state.view = 'learn'; render(); }
+      if (action === 'edit') { state.view = 'edit'; render(); }
+      if (action === 'open-lesson') { state.selectedLesson = Number(element.dataset.id); state.view = 'lesson'; render(); }
+      if (action === 'edit-lesson' || action === 'select-lesson') { updateLessonFromForm(); state.selectedLesson = Number(element.dataset.id); state.view = 'edit'; render(); }
       if (action === 'save') { updateLessonFromForm(); save(); render(); showToast('변경사항을 저장했습니다.'); }
-      if (action === 'export') exportContent();
-      if (action === 'import') document.querySelector('#import-file')?.click();
       if (action === 'toggle-complete') { const id = Number(element.dataset.id); state.completed = state.completed.includes(id) ? state.completed.filter((item) => item !== id) : [...state.completed, id]; save(); render(); showToast(state.completed.includes(id) ? '완료 상태를 저장했습니다.' : '완료 상태를 해제했습니다.'); }
       if (action === 'copy') { navigator.clipboard?.writeText(element.dataset.copy ?? ''); showToast('공식을 복사했습니다.'); }
       if (action === 'clear-lesson') { if (confirm('이 단계의 입력 내용을 모두 비울까요?')) { Object.assign(currentLesson(), { title: '', summary: '', body: '', algorithm: '', image: '', tips: '', practice: '' }); save(); render(); showToast('단계 내용을 비웠습니다.'); } }
@@ -284,13 +225,6 @@ function bindEvents() {
   });
   document.querySelectorAll('.lesson-card').forEach((card) => card.addEventListener('click', (event) => { if (!event.target.closest('button')) { state.selectedLesson = Number(card.dataset.lesson); render(); } }));
   document.querySelectorAll('#lesson-form input, #lesson-form textarea').forEach((fieldElement) => fieldElement.addEventListener('input', () => { updateLessonFromForm(); const preview = document.querySelector('.preview-card'); if (preview) { const snapshot = currentLesson(); preview.querySelector('h2').textContent = snapshot.title || '단계 제목'; preview.querySelector('.preview-summary').textContent = snapshot.summary || '짧은 설명이 여기에 표시됩니다.'; } }));
-  document.querySelector('#import-file')?.addEventListener('change', (event) => { const file = event.target.files?.[0]; if (file) importContent(file); });
 }
 
 render();
-window.addEventListener('popstate', (event) => {
-  state.view = event.state?.view ?? 'learn';
-  state.selectedLesson = event.state?.lesson ?? 1;
-  render();
-});
-history.replaceState({ view: state.view, lesson: state.selectedLesson }, '', window.location.pathname);
