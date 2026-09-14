@@ -203,7 +203,7 @@ function renderEditor(lesson) {
           <div class="form-row"><div>${field('algorithm', '공식 / 기호', lesson.algorithm, '공식이나 기호를 적어주세요')}</div><div>${field('image', '이미지 주소', lesson.image, '이미지 URL을 붙여넣으세요')}</div></div>
           <div class="form-row"><div>${field('tips', '주의할 점', lesson.tips, '실수하기 쉬운 점이나 기억할 내용을 적어주세요.', true)}</div><div>${field('practice', '연습 체크', lesson.practice, '연습 목표나 체크 항목을 적어주세요.', true)}</div></div>
         </form>
-        <div class="editor-actions"><button class="ghost-button" data-action="clear-lesson">이 단계 비우기</button><button class="solid-button" data-action="save">변경사항 저장 <span>✓</span></button></div>
+        <div class="editor-actions"><button class="ghost-button" data-action="clear-lesson">이 단계 비우기</button><div class="file-actions"><button class="file-button" data-action="export">파일로 저장</button><button class="file-button" data-action="import">파일 불러오기</button><input id="import-file" type="file" accept="application/json" hidden /><button class="solid-button" data-action="save">변경사항 저장 <span>✓</span></button></div></div>
       </section>
       <aside class="preview-panel"><div class="preview-label"><span>LIVE PREVIEW</span><span class="live-dot">● LIVE</span></div><div class="preview-card"><span class="step-number">0${lesson.id}</span><h2>${escapeHtml(lesson.title || '단계 제목')}</h2><p class="preview-summary">${escapeHtml(lesson.summary || '짧은 설명이 여기에 표시됩니다.')}</p>${lesson.image ? `<img class="preview-image" src="${escapeHtml(lesson.image)}" alt="단계 이미지 미리보기" />` : '<div class="image-placeholder"><span>＋</span><p>이미지를 추가하면<br />여기에 표시됩니다.</p></div>'}<div class="preview-block"><span>학습 내용</span><p>${escapeHtml(lesson.body || '작성한 학습 내용이 표시됩니다.')}</p></div>${lesson.algorithm ? `<div class="algorithm-box"><span>공식 / 기호</span><code>${escapeHtml(lesson.algorithm)}</code></div>` : ''}</div></aside>
     </div>
@@ -229,6 +229,35 @@ function showToast(message) {
   setTimeout(() => toast.classList.remove('show'), 2200);
 }
 
+function exportContent() {
+  updateLessonFromForm();
+  save();
+  const file = new Blob([JSON.stringify({ version: 1, lessons: state.lessons }, null, 2)], { type: 'application/json' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(file);
+  link.download = 'cube-note-content.json';
+  link.click();
+  URL.revokeObjectURL(link.href);
+  showToast('콘텐츠 파일을 저장했습니다.');
+}
+
+function importContent(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const imported = JSON.parse(reader.result);
+      if (!Array.isArray(imported.lessons) || imported.lessons.length !== 7) throw new Error('invalid content');
+      state.lessons = imported.lessons.map((lesson, index) => ({ ...initialLessons[index], ...lesson, id: index + 1 }));
+      save();
+      render();
+      showToast('콘텐츠 파일을 불러왔습니다.');
+    } catch {
+      showToast('올바른 큐브노트 파일이 아닙니다.');
+    }
+  };
+  reader.readAsText(file);
+}
+
 function updateLessonFromForm() {
   const form = document.querySelector('#lesson-form');
   if (!form) return;
@@ -246,6 +275,8 @@ function bindEvents() {
       if (action === 'open-lesson') { updateLessonFromForm(); navigate('lesson', Number(element.dataset.id)); }
       if (action === 'edit-lesson' || action === 'select-lesson') { updateLessonFromForm(); navigate('edit', Number(element.dataset.id)); }
       if (action === 'save') { updateLessonFromForm(); save(); render(); showToast('변경사항을 저장했습니다.'); }
+      if (action === 'export') exportContent();
+      if (action === 'import') document.querySelector('#import-file')?.click();
       if (action === 'toggle-complete') { const id = Number(element.dataset.id); state.completed = state.completed.includes(id) ? state.completed.filter((item) => item !== id) : [...state.completed, id]; save(); render(); showToast(state.completed.includes(id) ? '완료 상태를 저장했습니다.' : '완료 상태를 해제했습니다.'); }
       if (action === 'copy') { navigator.clipboard?.writeText(element.dataset.copy ?? ''); showToast('공식을 복사했습니다.'); }
       if (action === 'clear-lesson') { if (confirm('이 단계의 입력 내용을 모두 비울까요?')) { Object.assign(currentLesson(), { title: '', summary: '', body: '', algorithm: '', image: '', tips: '', practice: '' }); save(); render(); showToast('단계 내용을 비웠습니다.'); } }
@@ -253,6 +284,7 @@ function bindEvents() {
   });
   document.querySelectorAll('.lesson-card').forEach((card) => card.addEventListener('click', (event) => { if (!event.target.closest('button')) { state.selectedLesson = Number(card.dataset.lesson); render(); } }));
   document.querySelectorAll('#lesson-form input, #lesson-form textarea').forEach((fieldElement) => fieldElement.addEventListener('input', () => { updateLessonFromForm(); const preview = document.querySelector('.preview-card'); if (preview) { const snapshot = currentLesson(); preview.querySelector('h2').textContent = snapshot.title || '단계 제목'; preview.querySelector('.preview-summary').textContent = snapshot.summary || '짧은 설명이 여기에 표시됩니다.'; } }));
+  document.querySelector('#import-file')?.addEventListener('change', (event) => { const file = event.target.files?.[0]; if (file) importContent(file); });
 }
 
 render();
