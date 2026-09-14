@@ -1,17 +1,15 @@
 {
-  "name": "cube-note",
-  "private": true,
-  "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "vite": "^7.1.5"
+    "build": "node script/build.js",
+    "dev": "node script/build.js -- --dev",
+    "clean": "rm -rf ./dist",
+    "upgrade-cubing": "npm install --save cubing@latest"
   },
   "dependencies": {
-    "cubing": "^0.63.4"
+    "cubing": "^0.63.3"
+  },
+  "devDependencies": {
+    "barely-a-dev-server": "^0.8.0"
   }
 }
