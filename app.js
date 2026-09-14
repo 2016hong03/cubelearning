@@ -29,6 +29,15 @@ const state = {
   completed: load(PROGRESS_KEY, [])
 };
 
+function navigate(view, lessonId = state.selectedLesson, replace = false) {
+  state.view = view;
+  state.selectedLesson = lessonId;
+  const historyState = { view, lesson: lessonId };
+  if (replace) history.replaceState(historyState, '', window.location.pathname);
+  else history.pushState(historyState, '', window.location.pathname);
+  render();
+}
+
 function load(key, fallback) {
   try {
     const value = JSON.parse(localStorage.getItem(key));
@@ -232,10 +241,10 @@ function bindEvents() {
   document.querySelectorAll('[data-action]').forEach((element) => {
     element.addEventListener('click', () => {
       const action = element.dataset.action;
-      if (action === 'home' || action === 'learn') { updateLessonFromForm(); state.view = 'learn'; render(); }
-      if (action === 'edit') { state.view = 'edit'; render(); }
-      if (action === 'open-lesson') { state.selectedLesson = Number(element.dataset.id); state.view = 'lesson'; render(); }
-      if (action === 'edit-lesson' || action === 'select-lesson') { updateLessonFromForm(); state.selectedLesson = Number(element.dataset.id); state.view = 'edit'; render(); }
+      if (action === 'home' || action === 'learn') { updateLessonFromForm(); navigate('learn'); }
+      if (action === 'edit') { updateLessonFromForm(); navigate('edit'); }
+      if (action === 'open-lesson') { updateLessonFromForm(); navigate('lesson', Number(element.dataset.id)); }
+      if (action === 'edit-lesson' || action === 'select-lesson') { updateLessonFromForm(); navigate('edit', Number(element.dataset.id)); }
       if (action === 'save') { updateLessonFromForm(); save(); render(); showToast('변경사항을 저장했습니다.'); }
       if (action === 'toggle-complete') { const id = Number(element.dataset.id); state.completed = state.completed.includes(id) ? state.completed.filter((item) => item !== id) : [...state.completed, id]; save(); render(); showToast(state.completed.includes(id) ? '완료 상태를 저장했습니다.' : '완료 상태를 해제했습니다.'); }
       if (action === 'copy') { navigator.clipboard?.writeText(element.dataset.copy ?? ''); showToast('공식을 복사했습니다.'); }
@@ -247,3 +256,9 @@ function bindEvents() {
 }
 
 render();
+window.addEventListener('popstate', (event) => {
+  state.view = event.state?.view ?? 'learn';
+  state.selectedLesson = event.state?.lesson ?? 1;
+  render();
+});
+history.replaceState({ view: state.view, lesson: state.selectedLesson }, '', window.location.pathname);
