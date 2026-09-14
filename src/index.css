@@ -63,3 +63,4 @@ button:disabled { cursor:not-allowed; }
 .file-button { padding:9px 10px; color:var(--teal-dark); background:#f2f8f3; border:1px solid #c4ded0; border-radius:5px; font-size:10px; font-weight:700; }
 @media (max-width:680px) { .editor-actions { align-items:flex-start; flex-direction:column; }.file-actions { width:100%; flex-wrap:wrap; }.file-actions .solid-button { margin-left:auto; } }
 @media (max-width:680px) { .twist-grid { grid-template-columns:1fr; }.twist-card { grid-template-columns:1fr 125px; }.twist-card twisty-player { width:125px; height:145px; } }
+.move-photo { display:block; width:100%; max-height:105px; object-fit:contain; margin:0 0 11px; border-radius:5px; }
