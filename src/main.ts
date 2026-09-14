@@ -1,5 +1,5 @@
 import 'cubing/twisty';
-import { beginnerLessons } from './cube.js';
+import { beginnerLessons, twistyPlayerDefaults } from './cube.js';
 
 const STORAGE_KEY = 'cube-note-content-v1';
 const PROGRESS_KEY = 'cube-note-progress-v1';
@@ -128,7 +128,7 @@ function renderLessonView(lesson) {
   const blocks = [
     lesson.body ? `<section class="lesson-content-block"><span class="eyebrow">LESSON NOTE</span><h2>학습 내용</h2><p class="long-copy">${escapeHtml(lesson.body)}</p></section>` : '',
     lesson.algorithm ? `<section class="lesson-content-block algorithm-section"><span class="eyebrow">MOVE / FORMULA</span><h2>공식 / 기호</h2><div class="large-algorithm"><code>${escapeHtml(lesson.algorithm)}</code><button class="copy-button" data-action="copy" data-copy="${escapeHtml(lesson.algorithm)}">복사</button></div></section>` : '',
-    lesson.cases?.length ? `<section class="lesson-content-block cases-section"><span class="eyebrow">CASES</span><h2>케이스별 움직임</h2>${lesson.cases.map((item) => `<div class="case-block"><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.description)}</p><twisty-player experimental-setup-alg="${escapeHtml(item.setup)}" alg="${escapeHtml(lesson.algorithm)}"></twisty-player></div>`).join('')}</section>` : '',
+    lesson.cases?.length ? `<section class="lesson-content-block cases-section"><span class="eyebrow">CASES</span><h2>케이스별 움직임</h2>${lesson.cases.map((item) => `<div class="case-block"><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.description)}</p><twisty-player experimental-setup-alg="${escapeHtml(item.setup)}" alg="${escapeHtml(lesson.algorithm)}" control-panel="${escapeHtml(twistyPlayerDefaults.controlPanel)}"></twisty-player></div>`).join('')}</section>` : '',
     lesson.tips ? `<section class="lesson-content-block"><span class="eyebrow">REMEMBER</span><h2>주의할 점</h2><p class="long-copy">${escapeHtml(lesson.tips)}</p></section>` : '',
     lesson.practice ? `<section class="lesson-content-block practice-section"><span class="eyebrow">PRACTICE</span><h2>연습 체크</h2><p class="long-copy">${escapeHtml(lesson.practice)}</p></section>` : ''
   ].filter(Boolean).join('');

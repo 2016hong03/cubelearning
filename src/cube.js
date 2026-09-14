@@ -1,5 +1,9 @@
 // 큐브 학습 콘텐츠와 twisty-player 설정을 이 파일에서 관리하세요.
 
+export const twistyPlayerDefaults = {
+  controlPanel: 'bottom-row'
+};
+
 export const sevenStepCases = [
   {
     title: 'Case 1',
