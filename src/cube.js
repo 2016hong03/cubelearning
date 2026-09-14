@@ -28,10 +28,10 @@ export const sevenStepCases = [
 ];
 
 export const twistLessons = [
-  { title: '오른손 트위스트', description: '오른손으로 익히는 기본 트위스트', algorithm: "R U R' U'", image: '/images/right-twist.svg' },
-  { title: '오른손 역트위스트', description: '오른손 트위스트의 역순 공식', algorithm: "U R U' R'", image: '/images/right-reverse-twist.svg' },
-  { title: '왼손 트위스트', description: '왼손으로 익히는 기본 트위스트', algorithm: "L' U' L U", image: '/images/left-twist.svg' },
-  { title: '왼손 역트위스트', description: '왼손 트위스트의 역순 공식', algorithm: "U' L' U L", image: '/images/left-reverse-twist.svg' }
+  { title: '오른손 트위스트', description: '오른손으로 익히는 기본 트위스트', algorithm: "R U R' U'" },
+  { title: '오른손 역트위스트', description: '오른손 트위스트의 역순 공식', algorithm: "U R U' R'" },
+  { title: '왼손 트위스트', description: '왼손으로 익히는 기본 트위스트', algorithm: "L' U' L U" },
+  { title: '왼손 역트위스트', description: '왼손 트위스트의 역순 공식', algorithm: "U' L' U L" }
 ];
 
 export const beginnerLessons = [

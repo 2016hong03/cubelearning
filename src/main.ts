@@ -128,8 +128,7 @@ function renderLearning(lesson) {
 }
 
 function renderTwistCard(twist) {
-  const moveImage = twist.image ? `<img class="move-photo" src="${escapeHtml(twist.image)}" alt="${escapeHtml(twist.title)} 회전기호" />` : '';
-  return `<article class="twist-card"><div class="twist-card-copy"><span class="twist-label">BASIC MOVE</span><h3>${escapeHtml(twist.title)}</h3><p>${escapeHtml(twist.description)}</p>${moveImage}<code>${escapeHtml(twist.algorithm)}</code></div><twisty-player alg="${escapeHtml(twist.algorithm)}" control-panel="${escapeHtml(twistyPlayerDefaults.controlPanel)}"></twisty-player></article>`;
+  return `<article class="twist-card"><div class="twist-card-copy"><span class="twist-label">BASIC MOVE</span><h3>${escapeHtml(twist.title)}</h3><p>${escapeHtml(twist.description)}</p><code>${escapeHtml(twist.algorithm)}</code></div><twisty-player alg="${escapeHtml(twist.algorithm)}" control-panel="${escapeHtml(twistyPlayerDefaults.controlPanel)}"></twisty-player></article>`;
 }
 
 function renderLessonView(lesson) {
