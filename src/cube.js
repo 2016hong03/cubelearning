@@ -1,13 +1,5 @@
 // 큐브 학습 콘텐츠와 twisty-player 설정을 이 파일에서 관리하세요.
 
-export const twistyPlayerDefaults = {
-  tempoScale: '0.7',
-  stickering: 'PLL',
-  background: 'none',
-  width: '100%',
-  height: '300px'
-};
-
 export const sevenStepCases = [
   {
     title: 'Case 1',
