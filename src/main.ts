@@ -141,7 +141,7 @@ function renderLessonView(lesson) {
     <div class="lesson-detail-head"><button class="back-link" data-action="home">← 전체 단계</button><span class="eyebrow">STEP 0${lesson.id} / 3X3 BEGINNER</span><h1>${escapeHtml(lesson.title || '학습 준비 중')}</h1><p>${escapeHtml(lesson.summary || '이 단계의 학습 내용은 준비 중입니다.')}</p></div>
     <div class="lesson-detail-grid">
       <article class="lesson-reading">
-        ${lesson.image ? `<img class="lesson-hero-image" src="${escapeHtml(lesson.image)}" alt="${escapeHtml(lesson.title || '단계 이미지')}" />` : `<div class="detail-empty-visual"><div class="empty-cube">＋</div><p>이 단계에 이미지를 추가할 수 있습니다.</p></div>`}
+        ${lesson.image ? `<img class="lesson-hero-image" src="${escapeHtml(lesson.image)}" alt="${escapeHtml(lesson.title || '단계 이미지')}" />` : ''}
         ${blocks || '<div class="empty-content"><span>✓</span><h2>학습 내용 준비 중입니다.</h2><p>이 단계의 콘텐츠가 준비되면 이곳에서 확인할 수 있습니다.</p></div>'}
       </article>
       <aside class="lesson-aside"><div class="aside-label">STEP STATUS</div><div class="aside-step">0${lesson.id}<span>/ 07</span></div><button class="complete-button ${isComplete ? 'done' : ''}" data-action="toggle-complete" data-id="${lesson.id}">${isComplete ? '완료한 단계 ✓' : '이 단계 완료하기'}</button></aside>
