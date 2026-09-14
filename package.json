@@ -10,5 +10,8 @@
   },
   "devDependencies": {
     "vite": "^7.1.5"
+  },
+  "dependencies": {
+    "cubing": "^0.63.4"
   }
 }

@@ -1,3 +1,4 @@
+import 'cubing/twisty';
 import { beginnerLessons, twistyPlayerDefaults } from './cube.js';
 
 const STORAGE_KEY = 'cube-note-content-v1';
