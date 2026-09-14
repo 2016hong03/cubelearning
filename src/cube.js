@@ -12,22 +12,22 @@ export const sevenStepCases = [
   {
     title: 'Case 1',
     description: '엣지 조각이 상하좌우로 서로 바뀌어야 하는 경우',
-    setup: 'M2 U M2 U2 M2 U M2'
+    setup: 'x2 M2 U M2 U2 M2 U M2'
   },
   {
     title: 'Case 2',
     description: '엣지 조각이 대각선으로 서로 바뀌어야 하는 경우',
-    setup: "U M2 U M' U2 M2 U2 M' U' M2 U'"
+    setup: "x2 U M2 U M' U2 M2 U2 M' U' M2 U'"
   },
   {
     title: 'Case 3',
     description: '엣지 조각이 시계 방향으로 바뀌어야 하는 경우',
-    setup: "R2 U' R' U' R U R U R U' R"
+    setup: "x2 R2 U' R' U' R U R U R U' R"
   },
   {
     title: 'Case 4',
     description: '엣지 조각이 반시계 방향으로 바뀌어야 하는 경우',
-    setup: "R' U R' U' R' U' R' U R U R2"
+    setup: "x2 R' U R' U' R' U' R' U R U R2"
   }
 ];
 
