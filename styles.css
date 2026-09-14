@@ -27,6 +27,7 @@ button:disabled { cursor:not-allowed; }
 .empty-cube { width:45px; height:45px; display:grid; place-items:center; margin-bottom:8px; color:var(--teal-dark); border:1px solid #abd8c6; border-radius:9px; font-size:24px; }
 .detail-empty-visual p { margin:0; color:var(--muted); font-size:10px; }
 .lesson-content-block { padding:25px 0; border-top:1px solid var(--line); }
+.source-link { margin:0 0 2px; text-align:right; font-size:11px; }.source-link a { color:var(--teal-dark); font-weight:700; }
 .lesson-content-block h2 { margin:9px 0 12px; font-size:19px; letter-spacing:-.06em; }
 .long-copy { white-space:pre-wrap; margin:0; color:#52665c; font-size:13px; line-height:1.8; }
 .algorithm-section { padding-bottom:4px; }
@@ -34,6 +35,7 @@ button:disabled { cursor:not-allowed; }
 .large-algorithm code { color:var(--ink); font:500 16px 'DM Mono',monospace; word-break:break-word; }
 .copy-button { flex:none; padding:7px 10px; color:var(--teal-dark); background:var(--white); border:1px solid #abd8c6; border-radius:4px; font-size:10px; font-weight:700; }
 .practice-section { padding-bottom:0; }
+.case-block { padding:17px 0; border-top:1px solid var(--line); }.case-block strong { display:block; margin-bottom:5px; font-size:13px; }.case-block p { margin:0 0 8px; color:var(--muted); font-size:11px; }.case-block twisty-player { display:block; overflow:hidden; border-radius:6px; background:#fbfcf9; }
 .empty-content { display:grid; justify-items:start; padding:30px 0; border-top:1px solid var(--line); }
 .empty-content > span { width:30px; height:30px; display:grid; place-items:center; margin-bottom:12px; color:var(--teal-dark); background:var(--mint); border-radius:50%; }
 .empty-content h2 { margin:0 0 7px; font-size:18px; letter-spacing:-.06em; }

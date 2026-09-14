@@ -1,21 +1,31 @@
 const STORAGE_KEY = 'cube-note-content-v1';
 const PROGRESS_KEY = 'cube-note-progress-v1';
 
-const initialLessons = Array.from({ length: 7 }, (_, index) => ({
-  id: index + 1,
-  title: '',
-  summary: '',
-  body: '',
-  algorithm: '',
-  image: '',
-  tips: '',
-  practice: ''
+const initialLessons = [
+  ['1층 십자가 맞추기', '1층 십자가를 맞추는 단계', 'https://cubelearning.tistory.com/2'],
+  ['1층 코너 맞추기', '1층 코너를 맞추는 단계', 'https://cubelearning.tistory.com/3'],
+  ['2층 엣지 맞추기', '2층 엣지를 맞추는 단계', 'https://cubelearning.tistory.com/4'],
+  ['3층 십자가 맞추기', '3층 십자가를 맞추는 단계', 'https://cubelearning.tistory.com/5'],
+  ['3층 윗면 맞추기', '3층 윗면을 맞추는 단계', 'https://cubelearning.tistory.com/6'],
+  ['3층 코너 맞추기', '3층 코너를 맞추는 단계', 'https://cubelearning.tistory.com/7'],
+  ['3층 엣지 맞추기', '3층 엣지를 맞추는 단계', 'https://cubelearning.tistory.com/8']
+].map(([title, summary, source], index) => ({
+  id: index + 1, title, summary, source, body: '', algorithm: '', image: '', tips: '', practice: '', cases: []
 }));
+
+initialLessons[6].body = '큐브가 전부 완성된 경우를 제외하면 총 4가지 케이스가 있습니다.';
+initialLessons[6].algorithm = "R U R' U' L' U' L U U R U' R' U' L' U L";
+initialLessons[6].cases = [
+  { title: 'Case 1', description: '엣지 조각이 상하좌우로 서로 바뀌어야 하는 경우', setup: 'M2 U M2 U2 M2 U M2' },
+  { title: 'Case 2', description: '엣지 조각이 대각선으로 서로 바뀌어야 하는 경우', setup: "U M2 U M' U2 M2 U2 M' U' M2 U'" },
+  { title: 'Case 3', description: '엣지 조각이 시계 방향으로 바뀌어야 하는 경우', setup: "R2 U' R' U' R U R U R U' R" },
+  { title: 'Case 4', description: '엣지 조각이 반시계 방향으로 바뀌어야 하는 경우', setup: "R' U R' U' R' U' R' U R U R2" }
+];
 
 const state = {
   view: 'learn',
   selectedLesson: 1,
-  lessons: load(STORAGE_KEY, initialLessons),
+  lessons: load(STORAGE_KEY, initialLessons).map((lesson, index) => ({ ...initialLessons[index], ...lesson, cases: lesson.cases ?? initialLessons[index].cases })),
   completed: load(PROGRESS_KEY, [])
 };
 
@@ -134,8 +144,10 @@ function renderLessonView(lesson) {
   const previous = state.lessons.find((item) => item.id === lesson.id - 1);
   const next = state.lessons.find((item) => item.id === lesson.id + 1);
   const blocks = [
+    lesson.source ? `<p class="source-link"><a href="${escapeHtml(lesson.source)}" target="_blank" rel="noreferrer">원문 보기 ↗</a></p>` : '',
     lesson.body ? `<section class="lesson-content-block"><span class="eyebrow">LESSON NOTE</span><h2>학습 내용</h2><p class="long-copy">${escapeHtml(lesson.body)}</p></section>` : '',
     lesson.algorithm ? `<section class="lesson-content-block algorithm-section"><span class="eyebrow">MOVE / FORMULA</span><h2>공식 / 기호</h2><div class="large-algorithm"><code>${escapeHtml(lesson.algorithm)}</code><button class="copy-button" data-action="copy" data-copy="${escapeHtml(lesson.algorithm)}">복사</button></div></section>` : '',
+    lesson.cases?.length ? `<section class="lesson-content-block cases-section"><span class="eyebrow">CASES</span><h2>케이스별 움직임</h2>${lesson.cases.map((item) => `<div class="case-block"><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.description)}</p><twisty-player experimental-setup-alg="${escapeHtml(item.setup)}" alg="${escapeHtml(lesson.algorithm)}" tempo-scale="0.7" experimental-stickering="PLL" background="none" style="width:100%;height:300px;"></twisty-player></div>`).join('')}</section>` : '',
     lesson.tips ? `<section class="lesson-content-block"><span class="eyebrow">REMEMBER</span><h2>주의할 점</h2><p class="long-copy">${escapeHtml(lesson.tips)}</p></section>` : '',
     lesson.practice ? `<section class="lesson-content-block practice-section"><span class="eyebrow">PRACTICE</span><h2>연습 체크</h2><p class="long-copy">${escapeHtml(lesson.practice)}</p></section>` : ''
   ].filter(Boolean).join('');
