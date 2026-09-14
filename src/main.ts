@@ -1,5 +1,5 @@
 import 'cubing/twisty';
-import { beginnerLessons, twistyPlayerDefaults } from './cube.js';
+import { beginnerLessons, twistLessons, twistyPlayerDefaults } from './cube.js';
 
 const PROGRESS_KEY = 'cube-note-progress-v1';
 
@@ -113,17 +113,22 @@ function renderLearning(lesson) {
   const populated = hasContent(lesson);
   return `
     <div class="page-heading">
-      <div><span class="eyebrow">BEGINNER / 3X3</span><h1>나의 큐브 학습</h1><p>직접 만든 콘텐츠로 차근차근 기록하고 연습해보세요.</p></div>
+      <div><span class="eyebrow">BEGINNER / 3X3</span><h1>나의 큐브 학습</h1><p>기본 동작을 익힌 뒤 7단계 해법을 시작해보세요.</p></div>
     </div>
     <div class="hero-strip">
       <div class="hero-copy"><span class="section-kicker">3x3 초급</span><h2>내 속도로 배우는<br /><em>큐브 노트</em></h2><p>아직 비어 있는 단계에 나만의 설명과 공식을 기록하세요.</p></div>
       <div class="cube-graphic" aria-hidden="true">${renderCube()}</div>
       <div class="hero-stat"><span>학습 진행률</span><strong>${progressPercent()}<small>%</small></strong><div class="hero-progress"><span style="width: ${progressPercent()}%"></span></div><small>${completedCount()} / 7 단계 완료</small></div>
     </div>
+    <section class="twist-basics"><div class="section-heading"><div><span class="eyebrow">BEFORE YOU START</span><h2>트위스트 먼저 익히기</h2></div><span class="content-status ready">기초 공식 4개</span></div><p class="section-intro">7단계 학습에 앞서 자주 사용하는 네 가지 기본 동작을 확인해보세요.</p><div class="twist-grid">${twistLessons.map((twist) => renderTwistCard(twist)).join('')}</div></section>
     <div class="section-heading"><div><span class="eyebrow">YOUR CURRICULUM</span><h2>7단계 학습 목록</h2></div><span class="content-status ${populated ? 'ready' : ''}">${populated ? '콘텐츠 작성 중' : '콘텐츠를 입력해주세요'}</span></div>
     <div class="lesson-grid">${state.lessons.map((item) => renderLessonCard(item)).join('')}</div>
     <div class="tool-banner"><span class="tool-icon">✓</span><div><strong>오늘의 학습을 시작해보세요</strong><p>단계를 선택하면 준비된 학습 내용과 큐브 시뮬레이터를 확인할 수 있습니다.</p></div></div>
   `;
+}
+
+function renderTwistCard(twist) {
+  return `<article class="twist-card"><div class="twist-card-copy"><span class="twist-label">BASIC MOVE</span><h3>${escapeHtml(twist.title)}</h3><p>${escapeHtml(twist.description)}</p><code>${escapeHtml(twist.algorithm)}</code></div><twisty-player alg="${escapeHtml(twist.algorithm)}" control-panel="${escapeHtml(twistyPlayerDefaults.controlPanel)}"></twisty-player></article>`;
 }
 
 function renderLessonView(lesson) {

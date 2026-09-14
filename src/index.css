@@ -28,6 +28,7 @@ button:disabled { cursor:not-allowed; }
 .detail-empty-visual p { margin:0; color:var(--muted); font-size:10px; }
 .lesson-content-block { padding:25px 0; border-top:1px solid var(--line); }
 .source-link { margin:0 0 2px; text-align:right; font-size:11px; }.source-link a { color:var(--teal-dark); font-weight:700; }
+.twist-basics { margin-bottom:50px; }.section-intro { margin:-7px 0 17px; color:var(--muted); font-size:12px; }.twist-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }.twist-card { min-height:210px; display:grid; grid-template-columns:1fr 145px; gap:8px; align-items:center; padding:20px; overflow:hidden; background:var(--white); border:1px solid var(--line); border-radius:10px; }.twist-card-copy { min-width:0; }.twist-label { color:var(--teal-dark); font:500 9px 'DM Mono',monospace; letter-spacing:.1em; }.twist-card h3 { margin:10px 0 6px; font-size:15px; letter-spacing:-.06em; }.twist-card p { min-height:30px; margin:0 0 13px; color:var(--muted); font-size:10px; line-height:1.5; }.twist-card code { display:block; padding:9px; overflow:auto; color:var(--ink); background:#eff8f3; border-radius:5px; font:500 11px 'DM Mono',monospace; white-space:nowrap; }.twist-card twisty-player { width:145px; height:155px; }
 .lesson-content-block h2 { margin:9px 0 12px; font-size:19px; letter-spacing:-.06em; }
 .long-copy { white-space:pre-wrap; margin:0; color:#52665c; font-size:13px; line-height:1.8; }
 .algorithm-section { padding-bottom:4px; }
@@ -61,3 +62,4 @@ button:disabled { cursor:not-allowed; }
 .file-actions { display:flex; align-items:center; gap:6px; }
 .file-button { padding:9px 10px; color:var(--teal-dark); background:#f2f8f3; border:1px solid #c4ded0; border-radius:5px; font-size:10px; font-weight:700; }
 @media (max-width:680px) { .editor-actions { align-items:flex-start; flex-direction:column; }.file-actions { width:100%; flex-wrap:wrap; }.file-actions .solid-button { margin-left:auto; } }
+@media (max-width:680px) { .twist-grid { grid-template-columns:1fr; }.twist-card { grid-template-columns:1fr 125px; }.twist-card twisty-player { width:125px; height:145px; } }
