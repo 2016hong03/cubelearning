@@ -11,6 +11,15 @@ const state = {
   completed: load(PROGRESS_KEY, [])
 };
 
+function navigate(view: string, lessonId = state.selectedLesson, replace = false) {
+  state.view = view;
+  state.selectedLesson = lessonId;
+  const historyState = { view, lesson: lessonId };
+  if (replace) history.replaceState(historyState, '', window.location.pathname);
+  else history.pushState(historyState, '', window.location.pathname);
+  render();
+}
+
 function load(key, fallback) {
   try {
     const value = JSON.parse(localStorage.getItem(key));
@@ -211,20 +220,27 @@ function updateLessonFromForm() {
 
 function bindEvents() {
   document.querySelectorAll('[data-action]').forEach((element) => {
-    element.addEventListener('click', () => {
+    element.addEventListener('click', (event) => {
+      event.preventDefault();
       const action = element.dataset.action;
-      if (action === 'home' || action === 'learn') { updateLessonFromForm(); state.view = 'learn'; render(); }
-      if (action === 'edit') { state.view = 'edit'; render(); }
-      if (action === 'open-lesson') { state.selectedLesson = Number(element.dataset.id); state.view = 'lesson'; render(); }
-      if (action === 'edit-lesson' || action === 'select-lesson') { updateLessonFromForm(); state.selectedLesson = Number(element.dataset.id); state.view = 'edit'; render(); }
+      if (action === 'home' || action === 'learn') { updateLessonFromForm(); navigate('learn'); }
+      if (action === 'edit') { updateLessonFromForm(); navigate('edit'); }
+      if (action === 'open-lesson') { updateLessonFromForm(); navigate('lesson', Number(element.dataset.id)); }
+      if (action === 'edit-lesson' || action === 'select-lesson') { updateLessonFromForm(); navigate('edit', Number(element.dataset.id)); }
       if (action === 'save') { updateLessonFromForm(); save(); render(); showToast('변경사항을 저장했습니다.'); }
       if (action === 'toggle-complete') { const id = Number(element.dataset.id); state.completed = state.completed.includes(id) ? state.completed.filter((item) => item !== id) : [...state.completed, id]; save(); render(); showToast(state.completed.includes(id) ? '완료 상태를 저장했습니다.' : '완료 상태를 해제했습니다.'); }
       if (action === 'copy') { navigator.clipboard?.writeText(element.dataset.copy ?? ''); showToast('공식을 복사했습니다.'); }
       if (action === 'clear-lesson') { if (confirm('이 단계의 입력 내용을 모두 비울까요?')) { Object.assign(currentLesson(), { title: '', summary: '', body: '', algorithm: '', image: '', tips: '', practice: '' }); save(); render(); showToast('단계 내용을 비웠습니다.'); } }
     });
   });
-  document.querySelectorAll('.lesson-card').forEach((card) => card.addEventListener('click', (event) => { if (!event.target.closest('button')) { state.selectedLesson = Number(card.dataset.lesson); render(); } }));
+  document.querySelectorAll('.lesson-card').forEach((card) => card.addEventListener('click', (event) => { if (!event.target.closest('button')) { navigate('lesson', Number(card.dataset.lesson)); } }));
   document.querySelectorAll('#lesson-form input, #lesson-form textarea').forEach((fieldElement) => fieldElement.addEventListener('input', () => { updateLessonFromForm(); const preview = document.querySelector('.preview-card'); if (preview) { const snapshot = currentLesson(); preview.querySelector('h2').textContent = snapshot.title || '단계 제목'; preview.querySelector('.preview-summary').textContent = snapshot.summary || '짧은 설명이 여기에 표시됩니다.'; } }));
 }
 
 render();
+history.replaceState({ view: state.view, lesson: state.selectedLesson }, '', window.location.pathname);
+window.addEventListener('popstate', (event) => {
+  state.view = event.state?.view ?? 'learn';
+  state.selectedLesson = event.state?.lesson ?? 1;
+  render();
+});
